@@ -2,10 +2,11 @@
 
 namespace App\Http\Requests;
 
+use App\Models\Project;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 
-class StorProjectRequest extends FormRequest
+class AddMemberToProjectRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -13,12 +14,17 @@ class StorProjectRequest extends FormRequest
     public function authorize(): bool
     {
         $user = $this->user();
+        $projectId = $this->input('project_id'); 
+        $project = Project::find($projectId);
 
-        if ($user && $user->roles()->where('role_name', 'admin')->exists()) {
+
+        if ($user && 
+        $user->roles()->where('role_name', 'admin')->exists() && 
+        $project && 
+        $project->created_by === $user->id) {
             return true; 
         }
-
-        return false; 
+        return false;
     }
 
     /**
@@ -29,10 +35,8 @@ class StorProjectRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'project_name' => ['required','string', 'max:255'],
-            'description' => ['nullable', 'string'],
-            'start_date' => ['required','date'],
-            'end_date' => ['required','date', 'after_or_equal:start_date']
+            'user_id' => ['required', 'exists:users,id'],
+            'project_id' => ['required', 'exists:projects,id'],
         ];
     }
 }

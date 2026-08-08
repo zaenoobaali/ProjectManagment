@@ -41,7 +41,7 @@ class Project extends Model
         return $this->hasMany(Task::class);
     }
 
-    public function users(){
+    public function members(){
         return $this->belongsToMany(User::class,'project_user');
     }
 
