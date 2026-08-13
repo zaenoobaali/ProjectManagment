@@ -2,11 +2,13 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Project extends Model
 {
     //
+    use HasFactory;
     public const STATUS_ACTIVE ='active';
 
     public const STATUS_PENDING = 'pending';
@@ -41,7 +43,7 @@ class Project extends Model
         return $this->hasMany(Task::class);
     }
 
-    public function members(){
+    public function users(){
         return $this->belongsToMany(User::class,'project_user');
     }
 

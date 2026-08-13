@@ -53,13 +53,13 @@ class ProjectController extends Controller
         if(!$project){
             return $this->errorResponse('Project not found', 404);
         }
-        $isMember = $project->members()->where('user_id', $request->user()->id)->exists();
+        $isMember = $project->users()->where('user_id', $request->user()->id)->exists();
     
         if (!$isMember && $project->created_by !== $request->user()->id) {
             return $this->errorResponse('You are not authorized to view this project', 403);
         }
 
-        $project->load(['createdBy', 'members', 'tasks']);
+        $project->load(['createdBy', 'users', 'tasks']);
             return $this->successResponse($project,'Project showed successfully');
     }
 
@@ -67,10 +67,10 @@ class ProjectController extends Controller
     {
         //$user = User::findOrFail($request->user_id);
         $project = Project::findOrFail($request->project_id);
-        if ($project->members()->where('user_id', $request->user_id)->exists()) {
+        if ($project->users()->where('user_id', $request->user_id)->exists()) {
             return $this->errorResponse('This user already belongs to the project', 400);
         }
-        $project->members()->attach($request->user_id);
+        $project->users()->attach($request->user_id);
         return $this->successResponse(null,'Member added to project successfully');
     }
     
@@ -96,7 +96,7 @@ class ProjectController extends Controller
         !$request->user()->roles()->where('role_name', 'admin')->exists()) {
             return $this->errorResponse('You are not authorized to delete this project', 403);
         }
-        $project->members()->detach();
+        $project->users()->detach();
         $project->delete();
 
         return $this->successResponse(null, 'Project and its memberships deleted successfully', 200);

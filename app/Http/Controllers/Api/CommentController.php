@@ -19,7 +19,7 @@ class CommentController extends Controller
     public function index(Request $request, Task $task)
     {
         $project = $task->project;
-        $isMember = $project->members()->where('user_id', $request->user()->id)->exists();
+        $isMember = $project->users()->where('user_id', $request->user()->id)->exists();
         if(!$isMember && $project->created_by !== $request->user()->id){
             return $this->errorResponse('You are not authorized to view this task', 403);
         }
@@ -32,7 +32,7 @@ class CommentController extends Controller
     public function store(StoreCommentRequest $request, Task $task)
     {
         $project = $task->project;
-        $isMember = $project->members()->where('user_id', $request->user()->id)->exists();
+        $isMember = $project->users()->where('user_id', $request->user()->id)->exists();
         if(!$isMember && $project->created_by !== $request->user()->id){
             return $this->errorResponse('You are not authorized to comment on this task', 403);
         }
@@ -49,7 +49,7 @@ class CommentController extends Controller
     public function update(UpdateCommentRequest $request, Comment $comment)
     {
         $project = $comment->task->project;
-        $isMember = $project->members()->where('user_id', $request->user()->id)->exists();
+        $isMember = $project->users()->where('user_id', $request->user()->id)->exists();
         if(!$isMember && $project->created_by !== $request->user()->id){
             return $this->errorResponse('You are not authorized to update this comment', 403);
         }
@@ -71,7 +71,7 @@ class CommentController extends Controller
     public function destroy(Comment $comment, Request $request)
     {
         $project = $comment->task->project;
-        $isMember = $project->members()->where('user_id', $request->user()->id)->exists();
+        $isMember = $project->users()->where('user_id', $request->user()->id)->exists();
         if(!$isMember && $project->created_by !== $request->user()->id){
             return $this->errorResponse('You are not authorized to delete this comment', 403);
         }

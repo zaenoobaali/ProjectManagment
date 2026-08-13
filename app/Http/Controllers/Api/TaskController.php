@@ -56,7 +56,7 @@ class TaskController extends Controller
 
         $project = Project::findOrFail($task->project_id);
 
-        $isMember = $project->members()->where('user_id', $request->user()->id)->exists();
+        $isMember = $project->users()->where('user_id', $request->user()->id)->exists();
 
         if (!$isMember && $project->created_by !== $request->user()->id) {
             return $this->errorResponse('You are not authorized to view this task', 403);
@@ -85,7 +85,7 @@ class TaskController extends Controller
         return $this->errorResponse('You are not authorized to assign tasks for this project', 403);
         }
         //the user is member in project?
-        $isMember = $project->members()->where('user_id', $request->user_id)->exists();
+        $isMember = $project->users()->where('user_id', $request->user_id)->exists();
         if (!$isMember) {
         return $this->errorResponse('The user is not a member of the project', 403);
         }  
