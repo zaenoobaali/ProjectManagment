@@ -22,6 +22,7 @@ It's an API application, the admin can :
 8- assign task to member
 
 
+
 And the member can:
 
 1- show his projects
@@ -32,6 +33,9 @@ And the member can:
 
 4- update comment
 
-
 5- delete comment
+
+
+
+**NOTE**: there is a seeder to run it use *php artisan db:seed*
 
