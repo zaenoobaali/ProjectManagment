@@ -21,6 +21,10 @@ class ProjectController extends Controller
     {
         $projects = $request->user()->projects()->latest()->get();
 
+        if ($projects->isEmpty()) {
+            return $this->successResponse([], 'No projects found', 200);
+        }
+
         return $this->successResponse($projects,'Projects retrieved successfully');
         
     }
@@ -37,7 +41,7 @@ class ProjectController extends Controller
         ]);
         
         $request->user()->projects()->attach($project->id);
-        return $this->successResponse($project,'Project created successfuly',201);
+        return $this->successResponse($project,'Project created successfully',201);
     }
 
     /**
@@ -56,7 +60,7 @@ class ProjectController extends Controller
         }
 
         $project->load(['createdBy', 'members', 'tasks']);
-            return $this->successResponse($project,'Project showed successfuly');
+            return $this->successResponse($project,'Project showed successfully');
     }
 
     public function addMemberToProject(AddMemberToProjectRequest $request)
@@ -73,6 +77,11 @@ class ProjectController extends Controller
  
     public function update(UpdateProjectRequest $request, Project $project)
     {
+        if ($project->created_by !== $request->user()->id || 
+        !$request->user()->roles()->where('role_name', 'admin')->exists()) {
+            return $this->errorResponse('You are not authorized to update this project', 403);
+        }
+
         $project->update($request->validated());
 
          return $this->successResponse($project, 'Project updated successfully', 200);
