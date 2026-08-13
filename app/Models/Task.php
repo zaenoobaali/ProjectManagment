@@ -44,4 +44,8 @@ class Task extends Model
     public function users(){
         return $this->belongsToMany(User::class,'task_user');
     }
+
+    public function comments(){
+        return $this->hasMany(Comment::class);
+    }
 }
